@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
+import * as googleTTS from 'google-tts-api';
 
 // Z.AI (Zhipu AI) LLM API settings
 const LLM_API_KEY = process.env.LLM_API_KEY || '98ecaa5ba9d34447a06cec4d7fd900e9.CDFIORObSTXnmftH';
@@ -84,6 +86,31 @@ async function generateJSON(promptText: string) {
     return JSON.parse(content);
 }
 
+async function generateAudioAndGetFrames(text: string, filename: string): Promise<number> {
+    console.log(`音声生成中: ${filename}...`);
+    // Text could be slightly over 200 chars, so use getAllAudioBase64
+    const results = await googleTTS.getAllAudioBase64(text, { lang: 'ja', slow: false });
+    const buffers = results.map(res => Buffer.from(res.base64, 'base64'));
+    const finalBuffer = Buffer.concat(buffers);
+
+    const audioDir = path.join(__dirname, 'public', 'audio');
+    if (!fs.existsSync(audioDir)) {
+        fs.mkdirSync(audioDir, { recursive: true });
+    }
+
+    const filepath = path.join(audioDir, filename);
+    fs.writeFileSync(filepath, finalBuffer);
+
+    try {
+        const stdout = execSync(`ffprobe -i "${filepath}" -show_entries format=duration -v quiet -of csv="p=0"`).toString();
+        const durationSec = parseFloat(stdout.trim());
+        return Math.ceil(durationSec * 30) + 15; // 30fps + 0.5s padding
+    } catch (err) {
+        console.warn(`ffprobe failed for ${filename}, using fallback duration.`);
+        return 150; // fallback to 5 seconds
+    }
+}
+
 async function main() {
     try {
         // 1. Fetch News & Build Prompt
@@ -92,13 +119,14 @@ async function main() {
         // 2. Generate required JSON via LLM
         const finalJSON = await generateJSON(promptText);
 
-        // 3. Add default frame numbers required by the video
-        finalJSON.openingFrames = 150; // 5 seconds
-        finalJSON.slideFrames = 300;   // 10 seconds
-        finalJSON.endingFrames = 150;  // 5 seconds
+        // 3. Generate Audio and calculate actual frame count dynamically
+        console.log('🎙️ [3/4] 音声を生成しフレーム数を計算中...');
+        finalJSON.openingFrames = await generateAudioAndGetFrames(finalJSON.openingText, 'opening.mp3');
+        finalJSON.slideFrames = await generateAudioAndGetFrames(finalJSON.newsSummary, 'slide1.mp3');
+        finalJSON.endingFrames = await generateAudioAndGetFrames(finalJSON.endingText, 'ending.mp3');
 
         // 4. Write to props-single.json
-        console.log('💾 [3/3] props-single.json を保存中...');
+        console.log('💾 [4/4] props-single.json を保存中...');
         const outputPath = path.join(__dirname, 'props-single.json');
         fs.writeFileSync(outputPath, JSON.stringify(finalJSON, null, 2), 'utf-8');
 
