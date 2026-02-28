@@ -1,0 +1,26 @@
+{
+  "name": "remotion-news",
+  "version": "1.0.0",
+  "description": "AI News Video Generator",
+  "scripts": {
+    "start": "remotion studio",
+    "render": "remotion render src/index.ts out/video.mp4",
+    "build": "remotion render src/index.ts out/video.mp4",
+    "fetch": "tsx fetch-news.ts",
+    "render-daily": "remotion render SingleNews out/single-news.mp4 --props=props-single.json",
+    "automate": "npm run fetch && npm run render-daily"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@remotion/player": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "tsx": "^4.7.1",
+    "typescript": "^5.0.0"
+  }
+}

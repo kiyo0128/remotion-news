@@ -1,0 +1,25 @@
+{
+  "title": "今週のAIニュースまとめ",
+  "date": "2026年2月25日",
+  "slides": [
+    {
+      "heading": "SnowflakeとOpenAI、2億ドルの戦略的提携",
+      "summary": "SnowflakeとOpenAIが企業向けエージェントAIの展開を加速させるため、2億ドル規模のパートナーシップを締結。\n企業は自社データとAIを安全かつ効率的に統合できる環境が整う。",
+      "source": "The Wall Street Journal"
+    },
+    {
+      "heading": "LeCun氏がMetaを退職、ワールドモデル研究所設立へ",
+      "summary": "AIの第一人者Yann LeCun氏がMetaを退職し、自身のワールドモデル研究所を立ち上げ。\n50億ドル評価額での資金調達を検討、物理世界を理解するAI開発に注力。",
+      "source": "TechCrunch"
+    },
+    {
+      "heading": "Google DeepMind、Gemini 3.1 Proをリリース",
+      "summary": "100万トークンのコンテキストウィンドウ、ARC-AGI-2で77.1%のスコアを達成。\nテキスト・画像・音声・動画・コード対応の最強マルチモーダルモデル。",
+      "source": "LLM Stats"
+    }
+  ],
+  "accentColor": "#EF4444",
+  "bgColor": "#0f0f23",
+  "imageIndex": 3,
+  "audioFile": "narration.mp3"
+}
