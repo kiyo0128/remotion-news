@@ -1,8 +1,9 @@
 import React from 'react';
-import {Composition} from 'remotion';
-import {NewsVideo} from './NewsVideo';
-import {NewsReport} from './compositions/NewsReport';
-import {SingleNews} from './compositions/SingleNews';
+import { Composition } from 'remotion';
+import { NewsVideo } from './NewsVideo';
+import { NewsReport } from './compositions/NewsReport';
+import { SingleNews } from './compositions/SingleNews';
+import singleProps from '../props-single.json';
 
 // 日付から画像インデックス（1-5）を決定（ランダム選択用）
 const getImageIndex = (dateStr: string): number => {
@@ -59,19 +60,20 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="SingleNews"
         component={SingleNews}
-        durationInFrames={3000} // 音声に合わせて動的に変更可能（最大100秒）
+        durationInFrames={singleProps.openingFrames + singleProps.slideFrames + singleProps.endingFrames}
         fps={30}
-        width={1920}
-        height={1080}
+        width={1080}
+        height={1920}
         defaultProps={{
-          title: "AIニュース",
-          date: "2026年2月25日",
-          heading: "LeCun氏がMetaを退職",
-          summary: "AIの第一人者、ヤン・ルカン氏がMetaを退職し、自身のワールドモデル研究所を立ち上げました。",
-          source: "TechCrunch",
-          accentColor: "#EF4444",
-          bgColor: "#0f0f23",
-          imageIndex: randomImageIndex
+          themeColor: singleProps.themeColor,
+          openingText: singleProps.openingText,
+          newsTitle: singleProps.newsTitle,
+          newsSummary: singleProps.newsSummary,
+          endingText: singleProps.endingText,
+          imageIndex: randomImageIndex,
+          openingFrames: singleProps.openingFrames,
+          slideFrames: singleProps.slideFrames,
+          endingFrames: singleProps.endingFrames,
         }}
       />
 
